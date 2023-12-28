@@ -1,49 +1,27 @@
 import numpy as np 
 import matplotlib.pyplot as plt 
 
-from keras.layers import Input, Dense, Flatten, Dropout, Reshape, BatchNormalization, Conv2D, LeakyReLU, Embedding, multiply
+from keras.layers import Input, Dense, Flatten, Dropout, Reshape, BatchNormalization, LeakyReLU, Embedding, multiply
 from keras.models import Sequential, Model
 from keras.optimizers.legacy import Adam
-from keras.preprocessing.image import ImageDataGenerator
 from keras.utils import image_dataset_from_directory
 
 import tensorflow as tf
 
 class CGAN():
     def __init__(self) -> None:
+        # input shape
         self.img_rows = 64
         self.img_cols = 64
-        self.channels = 1
+        self.channels = 1 # gray scale images
         self.img_shape = (self.img_rows, self.img_cols, self.channels)
         self.num_classes = 2 # number of labels
         self.batch_size = 32
         self.latent_dim = 100
 
-        # train_datagen = ImageDataGenerator(rescale=1/255)
-        # test_datagen = ImageDataGenerator(rescale=1/255)
-        # self.train_gen_normal = train_datagen.flow_from_directory(
-        #     '../data/train_data_normal',
-        #     target_size=(self.img_rows, self.img_cols),
-        #     batch_size=self.batch_size,
-        #     class_mode='binary'
-        # )
-        # self.train_gen_pneumonia = train_datagen.flow_from_directory(
-        #     '../data/train_data_pneumonia',
-        #     target_size=(self.img_rows, self.img_cols),
-        #     batch_size=self.batch_size,
-        #     class_mode='binary'
-        # )
-        # self.test_gen = test_datagen.flow_from_directory(
-        #     '../data/test_data',
-        #     target_size=(self.img_rows, self.img_cols),
-        #     batch_size=self.batch_size,
-        #     class_mode='binary'
-        # )
-
-        
-
         optimizer = Adam(2e-4, 0.5)
 
+        # building and compiling the discriminator
         self.discriminator = self.build_discriminator()
         self.discriminator.compile(
             loss=['binary_crossentropy'],
@@ -51,6 +29,7 @@ class CGAN():
             metrics=['accuracy']
         )
 
+        # building generator
         self.generator = self.build_generator()
 
         noise = Input(shape=(self.latent_dim,))
@@ -61,6 +40,7 @@ class CGAN():
 
         valid = self.discriminator([img, label])
 
+        # combined model generator + discriminator (cgan), trains to fool the discriminator
         self.combined = Model([noise, label], valid)
         self.combined.compile(
             loss=['binary_crossentropy'],
@@ -125,14 +105,12 @@ class CGAN():
         return Model([img, label], validity)
     
     def train(self, epochs, batch_size=128, sample_interval=50):
+        # load data
         dataset = image_dataset_from_directory(
             '../data/', batch_size=32, image_size=(64, 64)
         )
 
-        # batch_images, batch_labels = next(self.train_gen_normal)
-        # print('length', len(batch_images))
-        # print(self.train_gen_normal.n)
-
+        # ground truths
         valid = np.ones((batch_size, 1))
         fake = np.zeros((batch_size, 1))
 
@@ -142,24 +120,32 @@ class CGAN():
                 gray_images = tf.image.rgb_to_grayscale(batch_images)
                 gray_images = tf.image.resize(gray_images, [64, 64])
                 
-                # train Discriminator
+                # Train Discriminator
+
+                # select random batch of images
                 indices = np.random.randint(0, len(gray_images), batch_size)
                 idx = tf.constant(indices, dtype=tf.int32)
                 imgs = tf.gather(gray_images, idx)
                 labels = tf.gather(batch_labels, idx).numpy()
 
+                # noise as generator input
                 noise = np.random.normal(0, 1, (batch_size, self.latent_dim))
                 random_labels = np.random.randint(0, self.num_classes, batch_size).reshape(-1, 1)
 
+                # generate batch of new images
                 gen_imgs = self.generator.predict([noise, random_labels])
 
-                d_loss_fake = self.discriminator.train_on_batch([gen_imgs, labels], fake)
+                # training the discriminator on real and fake images
                 d_loss_real = self.discriminator.train_on_batch([imgs, labels], valid)
+                d_loss_fake = self.discriminator.train_on_batch([gen_imgs, labels], fake)
                 d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
 
-                # train Generator
+                # Train Generator
+
+                # condition on labels
                 sampled_labels = np.random.randint(0, self.num_classes, batch_size).reshape(-1, 1)
 
+                # train the generator on noise
                 g_loss = self.combined.train_on_batch([noise, sampled_labels], valid)
 
                 print("%d [D loss: %f, acc.: %.2f%%] [G loss: %f]" % (epoch, d_loss[0], 100*d_loss[1], g_loss))
@@ -175,6 +161,7 @@ class CGAN():
 
         gen_imgs = self.generator.predict([noise, sampled_labels])
 
+        # rescaling images
         gen_imgs = 0.5 * gen_imgs + 0.5
 
         fig, ax = plt.subplots(r, c)
