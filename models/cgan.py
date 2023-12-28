@@ -1,3 +1,5 @@
+# Conditional GAN
+
 import numpy as np 
 import matplotlib.pyplot as plt 
 
@@ -172,10 +174,10 @@ class CGAN():
                 ax[i, j].set_title("Label %s" % sampled_labels[cnt])
                 ax[i, j].axis('off')
                 cnt = cnt + 1
-        fig.savefig(f'../generated_images/{epoch+1}.jpg')
+        fig.savefig(f'../generated_images_cgan/{epoch+1}.jpg')
         plt.close()
 
 
 if __name__ == '__main__':
     cgan = CGAN()
-    cgan.train(epochs=10, batch_size=32, sample_interval=1)
+    cgan.train(epochs=100, batch_size=32, sample_interval=10)
