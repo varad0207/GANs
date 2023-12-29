@@ -164,7 +164,7 @@ class GAN():
     def plot_losses_and_accuracy(self, epochs):
         epochs_range = np.linspace(1, epochs, len(self.generator_losses))
 
-        fig, ax1 = plt.subplots(figsize=(24, 6), dpi=100)
+        fig, ax1 = plt.subplots(figsize=(24, 8), dpi=100)
 
         ax1.plot(epochs_range, self.generator_losses, label='Generator Loss', color='crimson')
         ax1.plot(epochs_range, self.discriminator_losses, label='Discriminator Loss', color='dodgerblue')
@@ -186,5 +186,5 @@ class GAN():
 
 if __name__ == '__main__':
     gan = GAN()
-    gan.train(epochs=100, batch_size=32, sample_interval=10)
-    gan.plot_losses_and_accuracy(epochs=100)
+    gan.train(epochs=50, batch_size=32, sample_interval=10)
+    gan.plot_losses_and_accuracy(epochs=50)
