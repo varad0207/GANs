@@ -129,7 +129,7 @@ class GAN():
                 d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
 
                 # Train Generator
-                noise - np.random.normal(0, 1, (batch_size, self.latent_dim))
+                noise = np.random.normal(0, 1, (batch_size, self.latent_dim))
 
                 # train the generator on noise
                 g_loss = self.combined.train_on_batch(noise, valid)
