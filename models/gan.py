@@ -44,7 +44,7 @@ class GAN():
 
         valid = self.discriminator(img)
 
-        # combined model generator + discriminator (cgan), trains to fool the discriminator
+        # combined model generator + discriminator, trains to fool the discriminator
         self.combined = Model(noise, valid)
         self.combined.compile(
             loss=['binary_crossentropy'],

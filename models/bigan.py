@@ -54,7 +54,7 @@ class BiGAN():
         fake = self.discriminator([noise, img])
         valid = self.discriminator([z, img1])
 
-        # combined model generator + discriminator (cgan), trains to fool the discriminator
+        # combined model generator + discriminator, trains to fool the discriminator
         self.combined = Model([noise, img1], [fake, valid])
         self.combined.compile(
             loss=['binary_crossentropy', 'binary_crossentropy'],
