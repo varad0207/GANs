@@ -4,7 +4,7 @@ The objective is to implement and compare types of Generative Adversarial Networ
 
 # Table of Contents
 
-- [Overview](#implemented-gan-acrhitectures)
+- [Overview](#implemented-gan-architectures)
 - [Dataset Used](#dataset-used)
 - [Directory Descriptions](#directory-descriptions)
 - [Usage](#usage)
@@ -12,7 +12,7 @@ The objective is to implement and compare types of Generative Adversarial Networ
 - [Observations](#observations)
 - [References](#references)
 
-# Implemented GAN acrhitectures
+# Implemented GAN architectures
 
 1. GAN (Generative Adversarial Network): Traditional GAN. https://dl.acm.org/doi/abs/10.1145/3422622
 2. DCGAN (Deep Convolutional GAN): Uses CNNs in generator and discriminator to capture spatial features. https://arxiv.org/abs/1511.06434v2
@@ -54,20 +54,26 @@ train_df = df['train']
 git clone https://github.com/varad0207/GANs.git
 ```
 
-2. Load the dataset
+2. Setting up Dependencies - ensure you have python installed on your system. Use pip to install project dependencies listed in requirements.txt file
+
+```
+pip install -r requirements.txt
+```
+
+3. Load the dataset
 
 ```
 mkdir data
 python data_loader.py
 ```
 
-3. Navigate to model directory
+4. Navigate to model directory
 
 ```
 cd models
 ```
 
-4. Run GAN model scripts - for example to run traditional GAN
+5. Run GAN model scripts - for example to run traditional GAN
 
 ```
 python gan.py
@@ -75,7 +81,7 @@ python gan.py
 
 You can change number of epochs and batch_size as per your wish, i have used 50 epochs and batch_size of 32.
 
-5. Generating images - the scripts will execute and train respective models. The generated images will be saved in their respective generated images directory
+6. Generating images - the scripts will execute and train respective models. The generated images will be saved in their respective generated images directory
 
 # Conclusions
 
