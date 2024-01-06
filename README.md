@@ -2,6 +2,16 @@
 
 The objective is to implement and compare types of Generative Adversarial Networks (GANs). The exploration involves 4 GAN architectures: GAN, DCGAN(Deep Convolutional GAN), CGAN(Conditional GAN), and BiGAN(Bidirectional GAN). The primary focus is on conducting a comparative study to assess their efficacy in generating chest X-ray images illustrating both normal and pneumonia affected conditions
 
+# Table of Contents
+
+- [Overview](#implemented-gan-acrhitectures)
+- [Dataset Used](#dataset-used)
+- [Directory Descriptions](#directory-descriptions)
+- [Usage](#usage)
+- [Conclusions](#conclusions)
+- [Observations](#observations)
+- [References](#references)
+
 # Implemented GAN acrhitectures
 
 1. GAN (Generative Adversarial Network): Traditional GAN. https://dl.acm.org/doi/abs/10.1145/3422622
